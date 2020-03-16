@@ -12,6 +12,8 @@ Running by terminal commands: `python -m venv env`,
 `pip install -r requirements.txt`, `python manage.py migrate`, 
 `python manage.py runserver`
 
+Testing by command: `python manage.py test`
+
 Admin panel: `localhost:8000/admin` 
 (creating admin by command: `python manage.py createsuperuser`)
 
