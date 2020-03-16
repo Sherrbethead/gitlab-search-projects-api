@@ -8,8 +8,8 @@ Database: SQLite3
 
 ## Usage
 
-Running by terminal commands: `pip install -r requirements.txt`, 
-`python manage.py makemigrations`, `python manage.py migrate`, 
+Running by terminal commands: `python -m venv env`, 
+`pip install -r requirements.txt`, `python manage.py migrate`, 
 `python manage.py runserver`
 
 Admin panel: `localhost:8000/admin` 
