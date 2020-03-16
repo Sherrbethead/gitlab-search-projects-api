@@ -1,44 +1,94 @@
-# Тестовое задание: поиск проектов в Gitlab.
+# Gitlab projects parser API 
 
-* Язык: python;
-* Уровень: junior;
-* Технологии: Django, DRF, Flask, aiohttp.
+#### Find all Gitlab projects with name/description consisting of a search query
 
+Framework: Django REST
 
-## Описание
+Database: SQLite3
 
-Требуется, получив список проектов через API Github по подстроке поиска, вернуть их пользователю в формате JSON, предварительно сохранив результаты в БД.
+## Usage
 
+Running by terminal commands: `pip install -r requirements.txt`, 
+`python manage.py makemigrations`, `python manage.py migrate`, 
+`python manage.py runserver`
 
-## Сценарий
+Admin panel: `localhost:8000/admin` 
+(creating admin by command: `python manage.py createsuperuser`)
 
-1. пользователь определяет подстроку поиска проектов на Gitlab;
-2. подстрока поиска передается в запрос на получение списка проектов `https://gitlab.com/api/v4/projects/?search=<подстрока>`;
-3. API Gitlab возвращает список найденных проектов;
-4. из каждого найденого проекта выбираются атрибуты: `id`, `name`, `description` и `last_activity_at`;
-5. полученный список проектов сохраняется в локальную БД (`SQLite`);
-6. каждая созданная запись в БД должна получить атрибут `created_at`, соответствующий дате создания записи в таблице;
-7. пользователю возвращается ответ в формате JSON, содержащий искомые проекты, полученные из локальной БД.
+API: `localhost:8000/api`
 
+Single API instance: `localhost:8000/api/<identifier>`
 
-## Обязательные критерии приемки
+## Requests
+- **POST /api** 
 
-1. программа возвращает релевантные поисковому запросу данные;
-2. программа реализует собственное API на базе одной из предложенных технологий;
-3. данные поисковых запросов сохраняются в локальной БД.
+Arguments: 
 
+- Search query: any character string
 
-## Будет существенным плюсом
+Response: `201 Created` on success
 
-* наличие модульных тестов (`unit-test`);
-* аккуратно оформленная поставка готового решения;
-* реализация теста для приложенного BDD-сценария `tests/features/gitlab.feature`.
+All responses will have the form
+```json
+{
+    "id": "auto defined by database",
+    "search_query": " string defined by user input",
+    "gitlab_data": [
+        {
+            "id": "project ID",
+            "name": "project name",
+            "description": "project description",
+            "last_activity_at": "last project update datetime"
+        },
+    ],
+    "created_at": "query creation datetime"
+}
+```
 
+Response: `400 Bad Request` if projects are not exist 
 
-## Контроль качества исходного кода
+```json
+{
+    "error": "There are no projects for this search query"
+}
+```
 
-Проект содержит в себе настроенный на `git-hooks` статический анализатор кода `flake8`, который не позволяет коммитить в репозиторий код, не соответствующий описанным правилам. Для того, чтобы проверить ваш код, выполните в корне проекта команду:
+- **GET /api** or **GET /api/<identifier<identifier>>**
 
-```flake8 ./```
+Response: `200 OK` on success
 
-Отсутствие какого-либо вывода в консоль означает, что ваш код прекрасен!
+Example of response `GET /api/1`
+```json
+{
+    "id": 1,
+    "search_query": "kremlin",
+    "gitlab_data": [
+        {
+            "id": 12493512,
+            "name": "kremlin",
+            "description": "Kevin's gremlin cli tool. Since we can't run attacks on remote machines, wrote this to do so.",
+            "last_activity_at": "2019-05-28T02:37:09.398000+03:00"
+        },
+        {
+            "id": 10828930,
+            "name": "thekremlin",
+            "description": "",
+            "last_activity_at": "2019-02-13T19:29:48.578000+03:00"
+        }
+    ],
+    "created_at": "2020-03-15T20:50:20.421920+03:00"
+}
+```
+
+Response: `404 Not found` if a search query does not exist
+
+```json
+{
+    "detail": "Not found."
+}
+```
+- **DELETE /api/<identifier<identifier>>**
+
+Response: `400 No Content` on success
+
+Response: `404 Not found` if a search query does not exist

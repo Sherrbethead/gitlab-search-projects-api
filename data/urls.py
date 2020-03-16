@@ -1,7 +1,9 @@
-from django.urls import path
+from rest_framework.routers import DefaultRouter
 from .views import SearchDataView
 
+app_name = 'data'
 
-urlpatterns = [
-    path('api/', SearchDataView.as_view()),
-]
+# Wire up using automatic URL routing
+router = DefaultRouter()
+router.register('api', SearchDataView)
+urlpatterns = router.urls
