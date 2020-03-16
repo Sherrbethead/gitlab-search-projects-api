@@ -38,7 +38,7 @@ class SearchData(models.Model):
 
 class GitlabData(models.Model):
     """Gitlab projects database table."""
-    project_id = models.BigIntegerField()
+    project_id = models.BigIntegerField(primary_key=True)
     name = models.CharField(max_length=255)
     description = models.TextField(null=True)
     last_activity_at = models.DateTimeField()
