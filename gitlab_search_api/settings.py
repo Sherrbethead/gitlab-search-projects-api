@@ -45,10 +45,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny',),
     'PAGE_SIZE': 5,
-<<<<<<< HEAD
     'TEST_REQUEST_DEFAULT_FORMAT': 'json'
-=======
->>>>>>> fdf39eaa7f02b1e50a0d1fbc336a71211c104398
 }
 
 MIDDLEWARE = [

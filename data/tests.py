@@ -6,7 +6,7 @@ from data import models
 class ModelTest(TestCase):
 
     def test_search_data_str(self):
-        """Test search data string representation"""
+        """Test search data string representation."""
         search_data = models.SearchData.objects.create(
             search_query='kremlin'
         )
@@ -14,7 +14,7 @@ class ModelTest(TestCase):
         self.assertEqual(str(search_data), f'{search_data.search_query}')
 
     def test_gitlab_data_str(self):
-        """Test gitlab data string representation"""
+        """Test gitlab data string representation."""
         search_data = models.SearchData.objects.create(
             search_query='kremlin'
         )
