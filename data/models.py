@@ -1,5 +1,6 @@
 import requests
 from django.db import models
+from django.utils import timezone
 
 
 class SearchData(models.Model):
@@ -20,10 +21,23 @@ class SearchData(models.Model):
             f'https://gitlab.com/api/v4/projects/?search={search_query}'
         ).json()
         if not raw_data:
+            # Delete query set if there are no more projects for this query
+            no_projects = SearchData.objects.filter(search_query=search_query)
+            if no_projects:
+                no_projects.delete()
             raise(ValueError('There are no projects for this search query'))
 
-        # Create query set for entered query
-        search_data = cls.objects.create(search_query=search_query)
+        try:
+            # Update existed query set for entered query
+            search_data = SearchData.objects.get(search_query=search_query)
+            GitlabData.objects.filter(search_data=search_data).delete()
+            # Update creation time and add it to database
+            search_data.created_at = timezone.now()
+            search_data.save()
+        except SearchData.DoesNotExist:
+            # Create new query set for entered query
+            search_data = cls.objects.create(search_query=search_query)
+
         # Create and relate query set for each found gitlab project
         for project in raw_data:
             GitlabData.objects.create(
