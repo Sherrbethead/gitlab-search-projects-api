@@ -22,19 +22,19 @@ class SearchData(models.Model):
         ).json()
         if not raw_data:
             # Delete query set if there are no more projects for this query
-            no_projects = SearchData.objects.filter(search_query=search_query)
+            no_projects = cls.objects.filter(search_query=search_query)
             if no_projects:
                 no_projects.delete()
             raise(ValueError('There are no projects for this search query'))
 
         try:
             # Update existed query set for entered query
-            search_data = SearchData.objects.get(search_query=search_query)
+            search_data = cls.objects.get(search_query=search_query)
             GitlabData.objects.filter(search_data=search_data).delete()
             # Update creation time and add it to database
             search_data.created_at = timezone.now()
             search_data.save()
-        except SearchData.DoesNotExist:
+        except cls.DoesNotExist:
             # Create new query set for entered query
             search_data = cls.objects.create(search_query=search_query)
 
