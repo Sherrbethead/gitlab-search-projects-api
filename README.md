@@ -8,7 +8,9 @@ Database: SQLite3
 
 ## Usage
 
-Running by terminal commands: `python -m venv env`, 
+Running inside Docker container (in the background): `docker-compose up -d`
+
+Or running by terminal commands: `python -m venv env`, 
 `pip install -r requirements.txt`, `python manage.py migrate`, 
 `python manage.py runserver`
 
